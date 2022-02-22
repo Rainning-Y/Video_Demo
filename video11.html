@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="./class11.css" />
+</head>
+<body>
+        <div id="playbox" class="playbox">
+                <!-- 视频块 -->
+                <div id="videobox" class="videobox">
+                <video id="vd" src=".\IC-OP_高清 720P.mp4" width="600" ></video>
+                </div> 
+                <!-- 进度条 -->
+                <div id="progress" class="progress">
+                    <div id="now" class="now"></div>
+                </div>
+                <!-- 播放控制块 -->
+                <div id="consoles" class="consoles">
+                    <div id="group1" class="group1"></div>
+                    <div class="time">
+                        <span id="nowtime"></span>/<span id="time"></span>
+                    </div>
+                    <div id="group2" class="group2"></div>
+                    <div id="volum" class="volum">
+                        <div id="vnow" class="vnow"></div>
+                        <div id="silder" class="silder"></div>
+                    </div>
+                </div>
+                
+        </div>
+        
+        <script>
+            var video=document.getElementById("vd");
+            var havehour=false;
+            var flash;//定时器
+            progresswidth=600;
+            var volumewidth=100;
+            var nowvum=100;
+            var halfsilder=6;
+           
+            //播放按钮开始
+            var mark=true;
+            var mark2=true;
+            document.getElementById("group2").onclick=function(){
+                if(mark2){
+                    video.muted=true;
+                    document.getElementById("group2").style.backgroundImage="url(./zant.png)";
+                    console.log("静音")
+                    mark2=false;
+                }
+                else{
+                    video.muted=false;
+                    console.log("开启声音")
+                    mark2=true;
+                    document.getElementById("group2").style.backgroundImage="url(./声音_实体.png)";
+                }
+
+            }
+            document.getElementById("group1").onclick=function(){
+                if(mark){
+                    this.className += " rotate"
+                    video.play()
+                    mark = false
+                    flash=setInterval(function(){getnowtime();changeprogress()},100);
+                  }
+                else{
+                    this.className = "group1"
+                    video.pause()
+                     mark=true
+                     clearInterval(flash)
+                    }
+            }//播放按钮的点击事件完成
+            
+            //播放时间开始
+            function changetime(time){
+                time=Math.floor(time);
+                var h=Math.floor(time/3600);
+                var m=Math.floor((time-h*3600)/60);
+                var s=time-h*3600-m*60;
+                m=m<10?"0"+m:m;
+                s=s<10?"0"+s:s;
+                if(havehour){
+                    h=h<10?"0"+h:h;
+                    return h+":"+m+":"+s;
+                }
+                return m+":"+s;
+            };
+            function getnowtime(){
+                document.getElementById("nowtime").innerHTML=changetime(video.currentTime);
+                console.log(video.currentTime)
+            }
+            video.oncanplay=function(){
+                var ztime=video.duration;
+                havehour=ztime>=3600;
+                document.getElementById("time").innerHTML=changetime(ztime);
+                getnowtime();
+                console.log(ztime)
+                console.log(video.currentTime)
+            }//播放时间/总时间结束
+
+            //进度条开始
+            function changeprogress(){
+                var now=video.currentTime/video.duration*progresswidth;
+                document.getElementById("now").style.width=now+"px";
+                console.log("进度条开始改变")
+            }
+            //单击进度条快进
+            document.getElementById("progress").onclick=function(e){
+                console.log("单击了");
+                if(video.currentTime<=0) return;
+                var ccc=e.offsetX/progresswidth;
+                video.currentTime=ccc*video.duration;
+                document.getElementById("now").style.width=ccc+"px";
+            }
+            //音量滑块
+            function setpos(pos){
+                if(pos<0){
+                    pos=0;
+                }
+                else if(pos>volumewidth){
+                    pos=volumewidth;
+                }
+                document.getElementById("vnow").style.width=pos+"px";
+                document.getElementById("silder").style.left=(pos-halfsilder)+"px";
+                nowvum=pos;
+                video.volume=nowvum/volumewidth;
+            }
+            document.getElementById("volum").onclick=function(e){
+                
+                    setpos(e.offsetX);
+                
+                
+                console.log("777");
+            }
+        </script>
+   
+</body>
+</html>
