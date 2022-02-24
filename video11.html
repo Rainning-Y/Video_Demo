@@ -131,10 +131,10 @@
         nowvum = pos;
         video.volume = nowvum / volumewidth;
       }
-      document.getElementById("volum").onclick = function (e) {
-        setpos(e.offsetX);
+      el.addEventListener('click',function (e) {setpos(e.offsetX)}, false);
+      
 
-        console.log("777");
+    
       };
     </script>
   </body>
